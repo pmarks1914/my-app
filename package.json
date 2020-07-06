@@ -3,7 +3,6 @@
   "version": "2.6.0",
   "description": "CoreUI React Open Source Bootstrap 4 Admin Template",
   "author": "Łukasz Holeczek",
-  "homepage": "https://pmarks1914.github.io/my-app",
   "copyright": "Copyright 2017-2019 creativeLabs Łukasz Holeczek",
   "license": "MIT",
   "private": true,
@@ -66,7 +65,6 @@
   "devDependencies": {
     "@babel/plugin-proposal-optional-chaining": "^7.7.5",
     "customize-cra": "^0.9.1",
-    "gh-pages": "^3.1.0",
     "react-app-rewired": "^2.1.5",
     "react-scripts": "^3.3.0"
   },
@@ -74,8 +72,6 @@
     "dev": "next",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build",
     "test": "react-app-rewired test --env=jsdom",
     "test:cov": "npm test -- --coverage --watchAll=false",
     "test:debug": "react-scripts --inspect-brk test --runInBand",
