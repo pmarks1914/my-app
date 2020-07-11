@@ -5,7 +5,7 @@
   "author": "Łukasz Holeczek",
   "copyright": "Copyright 2017-2019 creativeLabs Łukasz Holeczek",
   "license": "MIT",
-  "private": true,
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
   "proxy": "https://pythonrestapibooks.herokuapp.com/",
   "repository": {
     "type": "git",

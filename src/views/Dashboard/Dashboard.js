@@ -28,6 +28,7 @@ import * as APP_CONFIG from "../../config/config";
 import { CircularProgressbar, buildStyles } from "react-circular-progressbar";
 import "react-circular-progressbar/dist/styles.css";
 import Account from "../../screens/Account/Account";
+import swal from "sweetalert2";
 
 const Widget03 = lazy(() => import("../../views/Widgets/Widget03"));
 
@@ -189,6 +190,7 @@ class Dashboard extends Component {
       channelCount: 0,
       campaignCount: 0,
       userCount: 0,
+      setTimeLoginSession: null
     };
   }
 
@@ -214,6 +216,7 @@ class Dashboard extends Component {
   );
   componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    
     this.setState({
       currentUser: currentUser,
     });
@@ -236,8 +239,16 @@ class Dashboard extends Component {
       });
   }
   render() {
+    swal.fire({
+      timer: 3000,
+      background: "#ffffff00",
+      onBeforeOpen: () => {
+        swal.showLoading();
+      },
+    });
     // Sign off user
-    if (this.state?.currentUser?.errCode === "") {
+    console.log("Date.now()==>", Date.now())
+    if (this.state?.currentUser?.setTimeNow  < Date.now() ) {
       window.location.href = "/login";
       localStorage.removeItem("currentUser");
     }
@@ -414,7 +425,7 @@ class Dashboard extends Component {
             ? this.state?.currentUser?.username
             : ""} */}
         </h3>
-        
+
         <Account />
       </div>
     );

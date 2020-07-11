@@ -4,6 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as APP_CONFIG from '../../config/config';
 import axios from 'axios';
+import { post } from 'jquery';
 
 
 toast.configure()
@@ -54,10 +55,9 @@ const AccountTransfer = (props) => {
         const formData = new FormData(formID);
 
         var subscriptionType = formData.get('subscriptionType');
-        var msisdn = formData.get('msisdn');
-        var channelId = formData.get('channelId');
-        var campaignId = formData.get('campaignId');
-        var subscriptionRemarks = formData.get('subscriptionRemarks');
+        var msisdn = formData.get('msisdn'); //number
+        var campaignId = formData.get('campaignId'); //name
+        var subscriptionRemarks = formData.get('subscriptionRemarks'); //amt
 
         var request = new XMLHttpRequest();
 
@@ -67,62 +67,92 @@ const AccountTransfer = (props) => {
             }
         };
 
-        let errorInputType = "* Type field may be empty";
-        let errorInputMsisdn = "* Account Number field may be empty";
-        let errorInputChannelId = "* Account name field may be empty";
+        let errorInputType = "Check Swift Code / Routing # field ";
+        let errorInputMsisdn = "Check Account Number field";
+        let errorInputCampaignId = "Check Account name field";
+        let errorInputAmt = "Check Ammount field";
         
-        if (subscriptionType == "") {
+        if (subscriptionType == "" ) {
             
-            toast.error(errorInputType);
+            toast.error(errorInputType,{
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                progress: undefined,
+                });
+        }
+        if ( subscriptionRemarks == "") {
+            toast.error(errorInputAmt,{
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                progress: undefined,
+                });
         }
         if (msisdn == "") {
-            toast.error(errorInputMsisdn);
+            toast.error(errorInputMsisdn,{
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                progress: undefined,
+                });
         }
-        if (channelId === null) {
-            toast.error(errorInputChannelId);
+        if (campaignId == "") {
+            toast.error(errorInputCampaignId,{
+                position: "top-left",
+                autoClose: 5000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                progress: undefined,
+                });
         }
-        else {
-            const campaignForm = new FormData();
-            campaignForm.append('CampaignForm', '{"msisdn": "' + msisdn + '","channelId": " ' + channelId + '"} ');
+        if(msisdn != "" && campaignId != "" && subscriptionRemarks != "") {
+            let accountData = props?.posts.map((post, id) =>{
+                return post;
+            });
+            
+            var today = new Date();
+            var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+            var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+            var dateTime = date+' '+time;            
+            var calBal = accountData[accountData.length - 1].balance;
 
-            let _that = this;
-            let urlParamData = "?" + "campaignId" + "=" + campaignId + "&" + "channelId" + "=" + channelId + "&" + "msisdn" + "=" + msisdn + "&" + "type" + "=" + subscriptionType;
-
-            axios.post(APP_CONFIG[APP_CONFIG.REACT_APP_ENVIRONMENT].API_CREATE_SUBSCRIPTION + urlParamData, 
+            axios.post(APP_CONFIG[APP_CONFIG.REACT_APP_ENVIRONMENT].BASE_URL_ACC, 
                 {
-                    "remarks": subscriptionRemarks
+                    "accountNumber": accountData[accountData.length - 1]?.accountNumber,
+                    "description": 'E-Transect/Trenfer/'+ dateTime +'/' + msisdn +'/'+ campaignId + '/' + subscriptionRemarks,
+                    "currency": accountData[(accountData.length - 1)].currency,
+                    "transactionDate": date.toString(),
+                    "checkNumber": (post?.checkNumber).toString(),
+                    "creditAmount": 0.00,
+                    "debitAmount": subscriptionRemarks,
+                    "balance": calBal-subscriptionRemarks
                 },
                 {
                     headers: {
-
                         ContentType: "application/json",
-                        Authorization: currentUser.token
                     }
                 }).then(function (res) {
                     //handle success
-                    toast.success('Added Campaign Successfully');
+                    toast.error('Successfull Transfer to' + msisdn,{
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: true,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        progress: undefined,
+                        });
                     setTimeout(function () {
                         window.location.reload();
-                    }, 1000)
+                    }, 2000)
                 }).catch(function (error) {
-                    if (error.response) {
-                        /*
-                         * The request was made and the server responded with a
-                         * status code that falls out of the range of 2xx
-                         */
-                        toast.error('Error Adding Campaign **');
-                    } else if (error.request) {
-                        /*
-                         * The request was made but no response was received, `error.request`
-                         * is an instance of XMLHttpRequest in the browser and an instance
-                         * of http.ClientRequest in Node.js
-                         */
-                        toast.error('Error Adding Campaign ***');
-                    } else {
-                        // Something happened in setting up the request and triggered an Error
-                        
-                        toast.error('Error Adding Campaign ****');
-                    }
                 });
 
         }
@@ -161,13 +191,9 @@ const AccountTransfer = (props) => {
                         <div className="container">
 
                             <FormGroup row>
-                                <Label htmlFor="subscriptionType" sm="12" md={{ size: 2, offset: 1 }} style={{ color: '#E60000' }}><a style={{ color: 'black' }}>*</a>Type:</Label>
+                                <Label htmlFor="subscriptionType" sm="12" md={{ size: 2, offset: 1 }} style={{ color: '#E60000' }}><a style={{ color: 'black' }}>*</a>Swift Code /Routing #:</Label>
                                 <Col sm="12" md={{ size: 8, offset: 0 }} style={{ paddingLeft: '15px' }}>
-                                    <Input type="select" name="subscriptionType" id="subscriptionType" defaultValue="Please select subscription type" required>
-                                        <option disabled>Select account type</option>
-                                        <option key="1" value="internal"> Internal</option>
-                                        <option key="2" value="External"> External</option>
-                                    </Input>
+                                    <Input type="number" name="subscriptionType" id="subscriptionType" placeholder="Provide Swift Code /Routing #" required />
                                 </Col>
                             </FormGroup>
                             <FormGroup row>
@@ -180,25 +206,25 @@ const AccountTransfer = (props) => {
                             <FormGroup row>
                                 <Label htmlFor="campaignId" sm="12" md={{ size: 2, offset: 1 }} style={{ color: '#E60000' }}><a style={{ color: 'black' }}>*</a>A/C Name:</Label>
                                 <Col sm="12" md={{ size: 8, offset: 0 }}>
-                                    <Input type="text" name="campaignId" id="campaignId" defaultValue="Please select campaign" required />
+                                    <Input type="text" name="campaignId" id="campaignId" placeholder="Provide account name" required />
                                 </Col>
                             </FormGroup>
                             
                             <FormGroup row>
-                                <Label htmlFor="subscriptionRemarks" sm="12" md={{ size: 2, offset: 1 }} style={{ color: '#E60000', paddingLeft: '25px' }}>Remarks:</Label>
+                                <Label htmlFor="subscriptionRemarks" sm="12" md={{ size: 2, offset: 1 }} style={{ color: '#E60000', paddingLeft: '25px' }}>Amount:</Label>
                                 <Col sm="12" md={{ size: 8, offset: 0 }} style={{ paddingLeft: '15px'}}>
-                                    <Input type="textarea" name="subscriptionRemarks" id="subscriptionRemarks" placeholder="Please provide remarks" style={{ height: '200px' }}/>
+                                    <Input type="number" step="0.01" mim="0" name="subscriptionRemarks" id="subscriptionRemarks" placeholder="Provide amount" />
                                 </Col>
                             </FormGroup>
                         </div>
                     </ModalBody>
                     <ModalFooter>
                         <div className="btn-group">
-                            <a style={{ paddingRight: '5px' }}>
-                                <button className="btn btn-lg" onClick={toggle} style={{ backgroundColor: '#000', color: '#fff', borderColor: 'green', borderRadius: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 0, paddingBottom: 0, textTransform: 'unset' }}>Cancel</button>{' '}
-                            </a>
 
-                            <button type="submit" onClick={addSubscriptionClick} className="btn btn-lg" style={{ backgroundColor: '#E60000', color: '#fff', borderColor: 'green', borderRadius: 10, paddingLeft: 5, paddingRight: 5, paddingTop: 0, paddingBottom: 0, textTransform: 'unset' }} >Confirm</button>
+                            <button type="submit" onClick={addSubscriptionClick} className="btn btn-lg" style={{ backgroundColor: 'red', color: '#fff', paddingLeft: 5, paddingRight: 5, paddingTop: 0, paddingBottom: 0, textTransform: 'unset' }} >Confirm</button>
+                            <a style={{ paddingRight: '5px' }}>
+                                <button className="btn btn-lg" onClick={toggle} style={{ backgroundColor: 'black', color: '#fff', paddingLeft: 5, paddingRight: 5, paddingTop: 0, paddingBottom: 0, textTransform: 'unset' }}>Close</button>{' '}
+                            </a>
                         </div>
                     </ModalFooter>
                 </Form>

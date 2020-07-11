@@ -15,8 +15,7 @@ class DefaultFooter extends Component {
 
     return (
       <React.Fragment>
-        <span><a style={{color: "red"}} href=""></a> &copy; 2020</span>
-        <span className="ml-auto">Powered by <a style={{color: "red"}} ></a></span>
+        <span className="container" style={{ display: 'flex', justifyContent: 'center' }} >Powered &copy;2020 | All Rights Reservred </span>
       </React.Fragment>
     );
   }

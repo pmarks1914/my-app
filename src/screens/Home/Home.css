@@ -9,12 +9,12 @@
 .form-control:focus {
     color: #495057;
     background-color: #fff;
-    border-color: black;
+    border-color:blue;
     outline: 0;
     box-shadow: 0 0 0 0.2rem hsla(355, 91%, 68%, 0.129);
 }
 .lginbdr{
-    border-top: black solid 5px;
+    border-top: blue solid 5px;
 }
 .loginerror{
     font-size: 12px;

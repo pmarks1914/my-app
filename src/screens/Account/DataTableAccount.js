@@ -8,10 +8,10 @@ const DataTableAccount = ({ posts }) => {
     const data = {
         columns: [
             {
-                label: '#',
-                field: 'id',
-                sort: 'disabled',
-                width: 1
+                label: 'Date',
+                field: 'transactionDate',
+                sort: 'asc',
+                width: 40
             },
             {
                 label: 'Description',
@@ -20,33 +20,21 @@ const DataTableAccount = ({ posts }) => {
                 width: '40'
             },
             {
-                label: 'Currency',
-                field: 'currency',
-                sort: 'dsc',
-                width: 40
-            },
-            {
-                label: 'Transaction date',
-                field: 'transactionDate',
+                label: 'Check Number',
+                field: 'checkNumber',
                 sort: 'asc',
                 width: 40
             },
             {
-                label: 'Effected Date',
-                field: 'effectedDate',
-                sort: 'asc',
-                width: 40
-            },
-            {
-                label: 'Credit Amt',
-                field: 'creditAmt',
+                label: 'Debit',
+                field: 'debitAmount',
                 sort: 'disabled',
                 width: 50,
                 height: 5
             },
             {
-                label: 'Debit Amt',
-                field: 'debitAmt',
+                label: 'Credit',
+                field: 'creditAmount',
                 sort: 'disabled',
                 width: 50,
                 height: 5
@@ -67,7 +55,6 @@ const DataTableAccount = ({ posts }) => {
             <MDBTable 
                 scrollY
                 maxHeight="300px"
-                id="idforSubscription"
                 small = {true}
                 searching="false"
                 paging="true"

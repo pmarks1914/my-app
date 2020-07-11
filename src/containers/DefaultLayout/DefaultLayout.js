@@ -23,10 +23,7 @@ import admin_navigation from '../../admin_navigation';
 
 // routes config for different user groups
 import admin_routes from '../../routes_admin';
-
-
 import { getUserAsync } from '../../actions/userActions';
-import usersData from '../../views/Users/UsersData';
 
 import swal from 'sweetalert2';
 import { Spinner } from 'reactstrap';
@@ -65,7 +62,7 @@ class DefaultLayout extends Component {
       navigation = admin_navigation;
     }
     else {
-      window.location.href="/login";
+      window.location.href="/auth/user/login";
     }
     
     // swal.fire({
@@ -80,7 +77,7 @@ class DefaultLayout extends Component {
     return (
       <div className="app">
         
-        <AppHeader fixed style={{backgroundColor: '#0000ff' }} >
+        <AppHeader fixed style={{backgroundColor: '#fff' }} >
           <Suspense  fallback={this.loading()}>
             <DefaultHeader onLogout={e=>this.signOut(e)}/>
           </Suspense>
